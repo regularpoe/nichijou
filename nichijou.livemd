@@ -1,0 +1,36 @@
+# 日常
+
+```elixir
+Mix.install([
+  {:vega_lite, "~> 0.1.9"},
+  {:kino, "~> 0.14.0"},
+  {:kino_vega_lite, "~> 0.1.13"}
+])
+```
+
+## nichijou
+
+```elixir
+defmodule Parallel do
+  def pmap(coll, func) do
+    coll
+    |> Enum.map(&(Task.async(fn -> func.(&1) end)))
+    |> Enum.map(&Task.await/1)
+  end
+end
+
+x_values = 1..10
+y_values = Parallel.pmap x_values, &(&1 * &1)
+
+data = Enum.zip(x_values, y_values)
+  |> Enum.map(fn {x, y} -> %{x: x, y: y} end)
+
+plot =
+  VegaLite.new()
+  |> VegaLite.data_from_values(data)
+  |> VegaLite.encode_field(:x, "x", type: :quantitative)
+  |> VegaLite.encode_field(:y, "y", type: :quantitative)
+  |> VegaLite.mark(:point)
+
+Kino.VegaLite.new(plot)
+```
