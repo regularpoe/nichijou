@@ -1,3 +1,5 @@
+<!-- livebook:{"persist_outputs":true} -->
+
 # 日常
 
 ```elixir
@@ -8,7 +10,7 @@ Mix.install([
 ])
 ```
 
-## nichijou
+## chapter 0 - what can we do?
 
 ```elixir
 defmodule Parallel do
@@ -33,4 +35,32 @@ plot =
   |> VegaLite.mark(:point)
 
 Kino.VegaLite.new(plot)
+```
+
+## chapter 1 - getting our feet wet
+
+```elixir
+"日常" |> String.graphemes() |> Enum.frequencies()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{"常" => 1, "日" => 1}
+```
+
+```elixir
+IO.puts "Hello, welcome! We are here everyday"
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+Hello, welcome! We are here everyday
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
 ```
