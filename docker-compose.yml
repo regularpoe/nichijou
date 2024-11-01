@@ -1,0 +1,12 @@
+services:
+  livebook:
+    image: ghcr.io/livebook-dev/livebook
+    container_name: livebook
+    user: "1000:1000"
+    environment:
+      LIVEBOOK_PASSWORD: securesecret
+    ports:
+      - '8080:8080'
+      - '8081:8081'
+    volumes:
+      - "./:/data"
