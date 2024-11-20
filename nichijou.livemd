@@ -64,3 +64,107 @@ Hello, welcome! We are here everyday
 ```
 :ok
 ```
+
+```elixir
+defmodule Geometry.Rectangle do
+  def area(a, b) do
+    a * b
+  end
+
+  def some_other_function(a, b), do: a + b
+end
+
+Geometry.Rectangle.area(4, 8)
+
+Geometry.Rectangle.some_other_function(2, 4)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+6
+```
+
+```elixir
+-5
+|> abs()
+|> Integer.to_string()
+|> IO.puts()
+
+quote do
+  -5
+  |> abs()
+  |> Integer.to_string()
+  |> IO.puts()
+end
+
+Code.string_to_quoted """
+-5
+|> abs()
+|> Integer.to_string()
+|> IO.puts()
+"""
+
+IO.puts(Integer.to_string(abs(-5)))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+5
+5
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+```elixir
+defmodule Calculator do
+  def add(a), do: add(a, 0)
+  def add(a, b), do: a + b
+end
+
+Calculator.add(2, 5)
+
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+7
+```
+
+```elixir
+defmodule Circle do
+  @moduledoc "Implements basic circle functions"
+  @pi 3.14159
+  
+  @doc "Computes the area of a circle"
+  @spec area(number) :: number
+  def area(r), do: r*r*@pi
+  
+  @doc "Computes the circumference of a circle"
+  @spec circumference(number) :: number
+  def circumference(r), do: 2*r*@pi
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Circle, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:circumference, 1}}
+```
+
+```elixir
+AnAtom == :"Elixir.AnAtom"
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+true
+```
