@@ -1,0 +1,169 @@
+# Elixir in Action
+
+## todo
+
+```elixir
+defmodule TodoList do
+  def new(), do: %{}
+
+  def add_entry(todo_list, date, title) do
+    Map.update(
+      todo_list,
+      date,
+      [title],
+      fn titles -> [title | titles] end
+    )
+  end
+
+  def entries(todo_list, date) do
+    Map.get(todo_list, date, [])
+  end
+end
+
+```
+
+```elixir
+defmodule MultiDict do
+  def new(), do: %{}
+
+  def add(dict, key, value) do
+    Map.update(dict, key, [value], &[value | &1])
+  end
+
+  def get(dict, key) do
+    Map.get(dict, key, [])
+  end
+end
+
+defmodule TodoListWithMultiDict do
+  def new(), do: MultiDict.new()
+
+  def add_entry(todo_list, date, title) do
+    MultiDict.add(todo_list, date, title)
+  end
+
+  def entries(todo_list, date) do
+    MultiDict.get(todo_list, date)
+  end
+end
+
+```
+
+```elixir
+entry = %{date: ~D[2024-11-29], title: "Elixir in Action"}
+
+IO.puts entry.date
+
+IO.puts entry.title
+
+defmodule TodoListWithMaps do
+  def new(), do: MultiDict.new()
+
+  def add_entry(todo_list, entry) do
+    MultiDict.add(todo_list, entry.date, entry)
+  end
+
+  def entries(todo_list, date) do
+    MultiDict.get(todo_list, date)
+  end
+end
+
+todo_list = TodoListWithMaps.new() |>
+  TodoListWithMaps.add_entry(%{date: ~D[2024-11-29], title: "Groceries"})
+
+todo_list = TodoListWithMaps.add_entry(todo_list, entry)
+
+TodoListWithMaps.entries(todo_list, ~D[2024-11-29])
+```
+
+## Abstracting with structs
+
+```elixir
+defmodule Fraction do
+  defstruct a: nil, b: nil
+
+  def new(a, b) do
+    %Fraction{a: a, b: b}
+  end
+
+  def value(%Fraction{a: a, b: b}) do
+    a / b
+  end
+
+  def add(%Fraction{a: a1, b: b1}, %Fraction{a: a2, b: b2}) do
+    new(
+      a1 * b2 + a2 * b1,
+      b2 * b1
+    )
+  end
+end
+
+```
+
+```elixir
+one_half = %Fraction{a: 1, b: 2}
+
+one_half.a
+
+one_half.b
+
+# pattern matching
+
+%Fraction{a: a, b: b} = one_half
+
+one_quarter = %Fraction{one_half | b: 4}
+
+Fraction.new(1, 2)
+|> Fraction.add(Fraction.new(1, 4))
+|> Fraction.value()
+
+Map.to_list(one_half)
+```
+
+```elixir
+# A struct pattern can't match a plain map:
+
+# %Fraction{a: a, b: b} = %{a: 1, b: 2}
+
+# However, a plain map pattern can match a struct:
+
+%{a: a, b: b} = %Fraction{a: 1, b: 2}
+
+```
+
+## Working with hierarchical data
+
+```elixir
+defmodule Todo do
+  defstruct next_id: 1, entries: %{}
+
+  def new(), do: %Todo{}
+
+  def add_entry(todo_list, entry) do
+    entry = Map.put(entry, :id, todo_list.next_id)
+
+    new_entries = Map.put(
+      todo_list.entries,
+      todo_list.next_id,
+      entry
+    )
+
+    %Todo{todo_list |
+      entries: new_entries,
+      next_id: todo_list.next_id + 1
+    }
+  end
+
+  def entries(todo_list, date) do
+    todo_list.entries
+    |> Map.values()
+    |> Enum.filter(fn entry -> entry.date == date end)
+  end
+end
+
+todo_list = Todo.new() |>
+  Todo.add_entry(%{date: ~D[2024-11-30], title: "Mimoza"}) |>
+  Todo.add_entry(%{date: ~D[2024-12-01], title: "Hajduk - Dinamo"})
+
+Todo.entries(todo_list, ~D[2024-11-30])
+```
